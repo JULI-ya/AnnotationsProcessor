@@ -11,5 +11,5 @@ public @interface CustomAnnotation {
 
     String className();
     String value() default "Hello";
-    int type() default 0;
+    int type1() default 0;
 }
