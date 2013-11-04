@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 public @interface CustomAnnotation {
 
     String className();
-    String value() default "Hello";
+    String value() default "Hello!";
     int type() default 0;
 }
