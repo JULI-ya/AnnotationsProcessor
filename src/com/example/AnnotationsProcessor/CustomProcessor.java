@@ -17,7 +17,7 @@ import java.io.Writer;
 import java.util.Set;
 
 
-@SupportedAnnotationTypes({"*"})
+@SupportedAnnotationTypes({"com.example.AnnotationsProcessor.CustomAnnotation"})
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class CustomProcessor extends AbstractProcessor {
 

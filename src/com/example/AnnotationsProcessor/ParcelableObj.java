@@ -1,6 +1,6 @@
 package com.example.AnnotationsProcessor;
 
 
-public @interface Handleable {
+public @interface ParcelableObj {
 
 }
