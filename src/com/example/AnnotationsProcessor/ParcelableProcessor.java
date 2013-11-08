@@ -14,10 +14,9 @@ import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.util.Set;
 
-@SupportedAnnotationTypes("com.example.AnnotationsProcessor.ParcelableObj")
+@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ParcelableProcessor extends AbstractProcessor {
 
@@ -51,26 +50,44 @@ public class ParcelableProcessor extends AbstractProcessor {
                     pw.println("//" + ca);
                     pw.println("//" + clazz);
 
-                    pw.println("    public final static void parse(org.json.JSONObject  object, " + e.getSimpleName() + " entity) {");
+                    pw.println("    public final static void parse(String  s, " + e.getSimpleName() + " entity) {");
                     pw.println("        try {");
+                    pw.println("            org.json.JSONObject object = new org.json.JSONObject(s);");
                     pw.println("            for (java.lang.reflect.Field field : entity.getClass().getDeclaredFields()) {");
                     pw.println("                field.setAccessible(true);");
                     pw.println("                String fieldName = field.getName();");
-                    pw.println("                if(!object.isNull(field.getName())) {");
-                    pw.println("                    field.set(entity, object.get(fieldName));");
+                    pw.println("                if (field.isAnnotationPresent(com.example.AnnotationsProcessor.ChildObj.class)) {");
+                    pw.println("                    Class<?> cl = field.getType();");
+                    pw.println("                    Object child = field.getType().getConstructor().newInstance();");
+                    pw.println("                    if (!object.isNull(fieldName)){");
+                    pw.println("                        java.lang.reflect.Method method = field.getType().getMethod(\"parse\", String.class, field.getType());");
+                    pw.println("                        method.invoke(cl, object.get(fieldName).toString(), child);");
+                    pw.println("                        cl.cast(child);");
+                    pw.println("                        field.set(entity, child);");
+                    pw.println("                     }");
+                    pw.println("                } else if (!object.isNull(fieldName)) {");
+                    pw.println("                    if (field.getType() == boolean.class) {");
+                    pw.println("                        field.set(entity, object.getBoolean(fieldName));");
+                    pw.println("                    } else if (field.getType() == int.class) {");
+                    pw.println("                        field.set(entity, object.getInt(fieldName));");
+                    pw.println("                    } else");
+                    pw.println("                        field.set(entity, object.get(fieldName));");
                     pw.println("                }");
                     pw.println("            }");
-                    pw.println("        } catch (IllegalAccessException e) {");
+                    pw.println("        } catch (NoSuchMethodException e) {");
+                    pw.println("            e.printStackTrace();");
+                    pw.println("        } catch (InstantiationException e) {");
+                    pw.println("            e.printStackTrace();");
+                    pw.println("        } catch (java.lang.reflect.InvocationTargetException e) {");
                     pw.println("            e.printStackTrace();");
                     pw.println("        } catch (org.json.JSONException e) {");
+                    pw.println("            e.printStackTrace();");
+                    pw.println("        } catch (IllegalAccessException e) {");
                     pw.println("            e.printStackTrace();");
                     pw.println("        }");
                     pw.println("    }");
                     pw.println("}");
                     pw.flush();
-//                } catch (ClassNotFoundException e1) {
-//                    pw.println(e1);
-//                    e1.printStackTrace();
                 } finally {
                     w.close();
                 }
