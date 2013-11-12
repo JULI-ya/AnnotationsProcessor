@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Set;
 
+
 @SupportedAnnotationTypes("com.example.AnnotationsProcessor.RequestObj")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class RequestProcessor extends AbstractProcessor {
