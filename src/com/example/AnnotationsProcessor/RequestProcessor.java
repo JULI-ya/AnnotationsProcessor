@@ -47,9 +47,16 @@ public class RequestProcessor extends AbstractProcessor {
                     pw.println("import org.apache.http.util.EntityUtils;");
                     pw.println("import android.util.Log;");
                     pw.println("import java.io.IOException;");
+                    pw.println("import com.example.AnnotationsProcessor.LoadCompleteListener;");
 
                     pw.println("\npublic class "
                             + e.getSimpleName() + "Projection {");
+
+                    pw.println("    LoadCompleteListener loadCompleteListener;");
+
+                    pw.println("\n  " + e.getSimpleName() + "Projection(LoadCompleteListener listener) {");
+                    pw.println("        loadCompleteListener = listener;");
+                    pw.println("    }");
 
                     pw.println("\n  public void getJson(String url) {");
                     pw.println("        new GetJsonTask(url).execute(\"\");");
@@ -84,6 +91,7 @@ public class RequestProcessor extends AbstractProcessor {
                     pw.println("    }");
 
                     pw.println("\n        protected void onPostExecute(String result) {");
+                    pw.println("            loadCompleteListener.onLoadComplete(result);");
                     pw.println("            Log.d(\"Json result is:\", \" \" + result);    ");
                     pw.println("        }");
                     pw.println("    }");
